@@ -9,7 +9,7 @@ create or replace function get_profile_activity(
 	p_last_name out profiles_profile.last_name%type,
 	p_phone_number out profiles_profile.phone_number%type,
 	p_mobil_number out profiles_profile.mobil_number%type,
-	p_sign_up_acti_act out integer,
+	p_sign_up_acti_act out integer
 	
 )as $$
 
