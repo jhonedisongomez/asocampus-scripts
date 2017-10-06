@@ -31,7 +31,7 @@ begin
 
 	exception when others then
 		begin
-			p_message := 'Error en el sistema por favor comuniquese con el administrador. ' || SQLERRM;
+			p_message := 'Error en el sistema por favor comuniquese con el administrador. ';
 			p_is_error := true;
 			rollback;
 		end;
@@ -56,11 +56,46 @@ declare
 begin
 	
 	return query
-	select menu.menu_label, menu.menu_url
-	from roles_roles ro, menu menu
-	where ro.active = true
-	and ro.id = menu.fk_rol
+	select menu.menu_label, menu.menu_url from profiles_profile pro, roles_rolesprofile rolpro, menu menu
+	where pro.fk_user_id = p_user_pk
+	and pro.active = true
+	and rolpro.fk_profile_id = pro.id
+	and rolpro.active = true
+	and menu.fk_rol = rolpro.fk_rol_id
 	and menu.active = true;
+	
+end; $$
+
+LANGUAGE plpgsql;
+
+
+create or replace function get_menu_options(
+	p_user_pk auth_user.id%type
+) returns table(
+
+	o_menu_label menu_options.menu_option_label%type,
+	o_menu_url menu_options.menu_option_url%type
+
+
+) as $$
+
+declare
+
+begin
+	
+	return query
+	select menuopt.menu_option_label, menuopt.menu_option_url
+	from profiles_profile pro,
+	roles_rolesprofile rolpro, menu menu,
+	menu_options menuopt
+	where pro.fk_user_id = p_user_pk
+	and pro.active = true
+	and rolpro.fk_profile_id = pro.id
+	and rolpro.active = true
+	and menu.fk_rol = rolpro.fk_rol_id
+	and menu.active = true
+	and menuopt.fk_menu = menu.id
+	and menuopt.active = true;	
 	
 end; $$
 

@@ -12,6 +12,20 @@ create table menu(
 
 );
 
+create table menu_options(
+
+	id serial not null,
+	menu_option_code varchar(64) not null,
+	menu_option_label varchar not null,
+	menu_option_url varchar not null,
+	active boolean not null,
+	version integer not null,
+	fk_menu int4 not null,
+	constraint menu_option_key primary key(id),
+	constraint fk_menu_option_menu foreign key(fk_menu) references menu(id)	
+
+);
+CREATE INDEX ix_menu_options ON menu_options (id, active);
 
 create table auditor_menu(
 
